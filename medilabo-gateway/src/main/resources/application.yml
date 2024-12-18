@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: patient_path_route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/patient/**
+        - id: doc_path_route
+          uri: http://localhost:8082
+          predicates:
+            - Path=/doc/**
+        - id: reporting_path_route
+          uri: http://localhost:8083
+          predicates:
+            - Path=/reporting/**
+
+server:
+  port: 8080  # Gateway runs on port 8080
