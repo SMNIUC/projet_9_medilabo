@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController
 {
     @GetMapping("/home")
-    public String getHomePage()
+    public String getHomePage( )
     {
-        return "home";
+        return "redirect:http://localhost:8080/login";
     }
 }

@@ -24,7 +24,7 @@
             <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link text-dark" aria-current="page" href="/home">Accueil</a>
-                    <a class="nav-link text-dark" href="/patient/list">Liste des Patients</a>
+                    <a class="nav-link text-dark" href="/patients/list">Liste des Patients</a>
                     <a class="nav-link text-dark" href="/contact">Nous Contacter</a>
                     <a class="nav-link text-dark" href="/logout">Déconnection</a>
                 </div>
@@ -46,7 +46,7 @@
 
     <div class="container">
         <div class="list-group">
-            <a href="/patient/list" class="list-group-item list-group-item-action">Liste des patients</a>
+            <a href="/patients/list" class="list-group-item list-group-item-action">Liste des patients</a>
             <a href="#" class="list-group-item list-group-item-action">Notes practicien</a>
             <a href="#" class="list-group-item list-group-item-action">Informations du compte</a>
         </div>

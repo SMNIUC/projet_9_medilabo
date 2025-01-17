@@ -1,15 +1,16 @@
 package fr.openclassrooms.medilabo.site.controller;
 
 import fr.openclassrooms.medilabo.site.domain.PatientDTO;
-import fr.openclassrooms.medilabo.site.service.PatientSiteService;
-import fr.openclassrooms.medilabo.site.webclient.PatientWebClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -17,59 +18,99 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PatientSiteController
 {
-    private final PatientWebClient patientWebClient;
-    private final PatientSiteService patientSiteService;
+    private final RestTemplate restTemplate;
 
-    @GetMapping("/patient/list")
+    @Value( "${gateway.url}" )
+    private String gatewayUrl;
+
+    @GetMapping("/patients/list")
     public String patientList( Model model )
     {
-        Flux<PatientDTO> patientListResult = patientWebClient.getPatientList( );
-        List<PatientDTO> patientList = patientListResult.collectList( ).block( );
-        model.addAttribute("patients", patientList );
+        try
+        {
+            String endpoint = "/patients/list";
+            String url = gatewayUrl + endpoint;
 
-        return "patient/patient-list";
+            // Fetch the response as a List of Products
+            ResponseEntity<List<PatientDTO>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>( )
+                    {
+                    }
+            );
+
+            model.addAttribute( "patients", response.getBody( ) );
+
+            return "patient/patient-list";
+        } catch ( HttpClientErrorException e) {
+            if ( e.getStatusCode( ) == HttpStatus.UNAUTHORIZED )  {
+                // Redirect the user to the login page
+                return "redirect:" + gatewayUrl + "/login";
+            }
+            throw e;
+        }
     }
 
-    @GetMapping("/patient/profile/{id}")
+    @GetMapping("/patients/{id}")
     public String patientProfilePage( Model model, @PathVariable int id )
     {
-        Mono<PatientDTO> patient = patientWebClient.getPatientInfo( id );
-        PatientDTO patientInfo = patient.share( ).block( );
-        model.addAttribute("patient", patientInfo );
+        String endpoint = "/patients/" + id;
+        String url = gatewayUrl + endpoint;
+
+        PatientDTO patient = restTemplate.getForObject( url, PatientDTO.class );
+
+        model.addAttribute("patient", patient );
 
         return "patient/patient-profile";
     }
 
-    @GetMapping("/patient/newPatientForm")
+    @GetMapping("/patients/newPatientForm")
     public String getNewPatientForm( )
     {
         return "patient/new-patient-form";
     }
 
-    @PostMapping("/patient/addNewPatient")
+    @PostMapping("/patients/addNewPatient")
     public String addNewPatient( @RequestBody MultiValueMap<String, String> formData, Model model )
     {
-        PatientDTO newPatientInfo = patientSiteService.createNewPatient( formData );
-        PatientDTO newPatient = patientWebClient.addNewPatient( newPatientInfo );
-        model.addAttribute("patient", newPatient );
+        HttpHeaders headers = new HttpHeaders( );
+        headers.setContentType( MediaType.APPLICATION_FORM_URLENCODED );
+
+        String endpoint = "/patients/addNewPatient";
+        String url = gatewayUrl + endpoint;
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>( formData, headers );
+        ResponseEntity<PatientDTO> response = restTemplate.exchange( url, HttpMethod.POST, request, PatientDTO.class );
+
+        model.addAttribute("patient", response.getBody( ) );
 
         return patientList( model );
     }
 
-    @PostMapping("/patient/updatePatient/{id}")
+    @PostMapping("/patients/{id}")
     public String updatePatientInfo( @RequestBody MultiValueMap<String, String> formData, @PathVariable int id, Model model )
     {
-        PatientDTO updatedPatientInfo = patientSiteService.updatePatientInfo( formData );
-        PatientDTO updatedPatient = patientWebClient.updatePatientInfo( id, updatedPatientInfo );
-        model.addAttribute("patient", updatedPatient );
+        HttpHeaders headers = new HttpHeaders( );
+        headers.setContentType( MediaType.APPLICATION_FORM_URLENCODED );
 
-        return "patient/patient-profile";
+        String endpoint = "/patients/" +id ;
+        String url = gatewayUrl + endpoint;
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>( formData, headers );
+        restTemplate.exchange( url, HttpMethod.POST, request, PatientDTO.class );
+
+        return patientProfilePage( model, id );
     }
 
-    @GetMapping("/patient/deletePatient/{id}")
+    @GetMapping("/patients/delete-patient/{id}")
     public String deletePatient( @PathVariable int id, Model model )
     {
-        patientWebClient.deletePatient( id );
+        String endpoint = "/patients/delete-patient/" +id ;
+        String url = gatewayUrl + endpoint;
+
+        restTemplate.delete( url );
 
         return patientList( model );
     }

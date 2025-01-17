@@ -24,7 +24,7 @@
             <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link text-dark" href="/home">Accueil</a>
-                    <a class="nav-link text-dark" href="/patient/list">Liste des Patients</a>
+                    <a class="nav-link text-dark" href="/patients/list">Liste des Patients</a>
                     <a class="nav-link text-dark" href="/contact">Nous Contacter</a>
                     <a class="nav-link text-dark" href="/logout">Déconnection</a>
                 </div>
@@ -37,7 +37,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/home">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="/patient/list">Liste des Patients</a></li>
+            <li class="breadcrumb-item"><a href="/patients/list">Liste des Patients</a></li>
             <li class="breadcrumb-item active" aria-current="page">Formulaire Nouveau Patient</li>
         </ol>
     </nav>
@@ -49,14 +49,14 @@
             <div class="d-flex justify-content-start" id="transaction-title">
                 <h5>Formulaire Nouveau Patient</h5>
             </div>
-            <form method="post" action="/patient/addNewPatient" id="newPatientForm">
-                <div class="mb-3">
-                    <label for="prenom" class="form-label">Prénom</label>
-                    <input type="text" name="prenom" class="form-control" id="prenom" aria-describedby="prenomHelp">
-                </div>
+            <form method="post" action="/patients/addNewPatient" id="newPatientForm">
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>
                     <input type="text" name="nom" class="form-control" id="nom" aria-describedby="nomHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="prenom" class="form-label">Prénom</label>
+                    <input type="text" name="prenom" class="form-control" id="prenom" aria-describedby="prenomHelp">
                 </div>
                 <div class="mb-3">
                     <label for="dateNaissance" class="form-label">Date de Naissance</label>

@@ -1,12 +1,12 @@
-package fr.openclassrooms.patient;
+package fr.openclassrooms.medilabo.patient;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PatientApiApplication
+public class MedilaboPatientApiApplication
 {
     public static void main(String[] args) {
-        SpringApplication.run( PatientApiApplication.class, args);
+        SpringApplication.run( MedilaboPatientApiApplication.class, args);
     }
 }

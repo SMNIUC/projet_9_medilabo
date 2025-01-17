@@ -1,4 +1,4 @@
-package fr.openclassrooms.patient.domain;
+package fr.openclassrooms.medilabo.patient.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,6 @@ import lombok.Data;
 @Table(name = "patient")
 public class Patient
 {
-    // TODO also update db!!
     @Id
     @Column(name = "idpatient")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

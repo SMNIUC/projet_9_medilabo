@@ -24,7 +24,7 @@
             <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link text-dark" href="/home">Accueil</a>
-                    <a class="nav-link text-dark" aria-current="page" href="/patient/list">Liste des Patients</a>
+                    <a class="nav-link text-dark" aria-current="page" href="/patients/list">Liste des Patients</a>
                     <a class="nav-link text-dark" href="/contact">Nous Contacter</a>
                     <a class="nav-link text-dark" href="/logout">Déconnection</a>
                 </div>
@@ -60,15 +60,15 @@
                     <th scope="row">${patient.idPatient}</th>
                     <td>${patient.prenom}</td>
                     <td>${patient.nom}</td>
-                    <td><a href="/patient/profile/${idPatient}">Fichier Patient - ${patient.prenom} ${patient.nom}</a></td>
-                    <td><a href="/patient/deletePatient/${idPatient}">Supprimer ce patient</a></td>
+                    <td><a href="/patients/${idPatient}">Fichier Patient - ${patient.prenom} ${patient.nom}</a></td>
+                    <td><a href="/patients/delete-patient/${idPatient}">Supprimer ce patient</a></td>
                 </tr>
             </#list>
         </tbody>
     </table>
 </div>
 <div class="d-grid gap-2 col-6 mx-auto">
-    <a href="/patient/newPatientForm" class="btn btn-primary" role="button">Ajouter un nouveau patient</a>
+    <a href="/patients/newPatientForm" class="btn btn-primary" role="button">Ajouter un nouveau patient</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

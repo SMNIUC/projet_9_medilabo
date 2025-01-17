@@ -1,10 +1,11 @@
-package fr.openclassrooms.patient.service;
+package fr.openclassrooms.medilabo.patient.service;
 
-import fr.openclassrooms.patient.domain.Patient;
-import fr.openclassrooms.patient.repositories.PatientApiRepository;
+import fr.openclassrooms.medilabo.patient.domain.Patient;
+import fr.openclassrooms.medilabo.patient.repositories.PatientApiRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,25 +44,43 @@ public class PatientApiService
     /**
      * Creates and saves a new patient in the database
      *
-     * @param patient the patient to be saved
+     * @param formData the json form data to create the patient
      */
     @Transactional
-    public Patient addNewPatient( Patient patient )
+    public Patient addNewPatient( MultiValueMap<String, String> formData )
     {
-        return patientRepository.save( patient );
+        Patient newPatient = new Patient( );
+
+        newPatient.setPrenom( formData.getFirst( "prenom" ) );
+        newPatient.setNom( formData.getFirst( "nom" ) );
+        newPatient.setDateNaissance( formData.getFirst( "dateNaissance" ) );
+        newPatient.setGenre( formData.getFirst( "genre" ) );
+        newPatient.setAdresse( formData.getFirst( "adresse" ) );
+        newPatient.setTelephone( formData.getFirst( "telephone" ) );
+
+        return patientRepository.save( newPatient );
     }
 
     /**
      * Updates a patient in the database with new info
      *
      * @param idPatient the id of the patient to be updated
-     * @param patient a patient object that holds the new patient information
+     * @param formData the json form data to update the patient
      */
     @Transactional
-    public Patient updatePatient( int idPatient, Patient patient )
+    public Patient updatePatient( int idPatient, MultiValueMap<String, String> formData )
     {
-        patient.setIdPatient( idPatient );
-        patientRepository.save( patient );
+        Patient updatedPatient = new Patient( );
+
+        updatedPatient.setIdPatient( idPatient );
+        updatedPatient.setPrenom( formData.getFirst( "prenom" ) );
+        updatedPatient.setNom( formData.getFirst( "nom" ) );
+        updatedPatient.setDateNaissance( formData.getFirst( "dateNaissance" ) );
+        updatedPatient.setGenre( formData.getFirst( "genre" ) );
+        updatedPatient.setAdresse( formData.getFirst( "adresse" ) );
+        updatedPatient.setTelephone( formData.getFirst( "telephone" ) );
+
+        patientRepository.save( updatedPatient );
 
         return findPatientById( idPatient );
     }

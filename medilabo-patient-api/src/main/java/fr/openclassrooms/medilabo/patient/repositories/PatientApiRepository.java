@@ -1,6 +1,6 @@
-package fr.openclassrooms.patient.repositories;
+package fr.openclassrooms.medilabo.patient.repositories;
 
-import fr.openclassrooms.patient.domain.Patient;
+import fr.openclassrooms.medilabo.patient.domain.Patient;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
