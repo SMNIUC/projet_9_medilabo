@@ -9,8 +9,6 @@
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-        <#include "css/patient-style.css">
-
         <title>MediLabo - Patient Profile</title>
     </head>
 
@@ -46,6 +44,11 @@
     <div class="container">
         <div class="container" id="patient-information-container">
             <div class="row">
+                <div class="md-3 d-flex justify-content-center">
+                    <#if error?? >
+                        <div class="alert alert-danger" role="alert">${error}</div>
+                    </#if>
+                </div>
                 <div class="d-flex justify-content-start" id="transaction-title">
                     <h5>Informations du Patient</h5>
                 </div>
@@ -69,11 +72,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="adresse" class="form-label">Adresse</label>
-                        <input type="text" name="adresse" class="form-control" id="adresse" aria-describedby="adresseHelp" value="${patient.adresse}">
+                        <input type="text" name="adresse" class="form-control" id="adresse" aria-describedby="adresseHelp" value="${patient.adresse}!">
                     </div>
                     <div class="mb-3">
                         <label for="telephone" class="form-label">Numéro de téléphone</label>
-                        <input type="text" name="telephone" class="form-control" id="telephone" aria-describedby="telephoneHelp" value="${patient.telephone}">
+                        <input type="text" name="telephone" class="form-control" id="telephone" aria-describedby="telephoneHelp" value="${patient.telephone}!">
                     </div>
                     <button type="submit" class="btn btn-primary">Mettre à jour les informations</button>
                 </form>

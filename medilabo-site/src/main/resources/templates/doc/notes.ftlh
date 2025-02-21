@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>MediLabo - Accueil</title>
+    <title>MediLabo - Patient Notes</title>
 </head>
 
 <body>
@@ -21,8 +21,8 @@
             </a>
             <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-link text-dark" aria-current="page" href="/home">Accueil</a>
-                    <a class="nav-link text-dark" href="/patients/list">Liste des Patients</a>
+                    <a class="nav-link text-dark" href="/home">Accueil</a>
+                    <a class="nav-link text-dark" aria-current="page" href="/patients/list">Liste des Patients</a>
                     <a class="nav-link text-dark" href="/contact">Nous Contacter</a>
                     <a class="nav-link text-dark" href="/logout">Déconnection</a>
                 </div>
@@ -34,21 +34,38 @@
 <div class="container bg-light">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item" aria-current="page"><a href="/home">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/home">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Liste des Notes Patient</li>
         </ol>
     </nav>
 </div>
 
 <div class="container">
-    <h1> Bienvenue sur votre espace MediLabo </h1>
-
-    <div class="container">
-        <div class="list-group">
-            <a href="/patients/list" class="list-group-item list-group-item-action">Liste des patients</a>
-            <a href="/doc/notes" class="list-group-item list-group-item-action">Toutes les notes patient</a>
-            <a href="#" class="list-group-item list-group-item-action">Informations du compte</a>
-        </div>
-    </div>
+    <!-- <div class="md-3 d-flex justify-content-center">
+        <#if error?? >
+            <div class="alert alert-danger" role="alert">${error}</div>
+        </#if>
+    </div> -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Id Note</th>
+            <th scope="col">Id Patient</th>
+            <th scope="col">Nom Patient</th>
+            <th scope="col">Note</th>
+        </tr>
+        </thead>
+        <tbody>
+        <#list notes as note>
+            <tr>
+                <th scope="row">${note._id}</th>
+                <td>${note.patientId}</td>
+                <td>${note.patient}</td>
+                <td>${note.note}</td>
+            </tr>
+        </#list>
+        </tbody>
+    </table>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

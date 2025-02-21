@@ -9,8 +9,6 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <#include "css/patient-style.css">
-
     <title>MediLabo - Patient List</title>
 </head>
 
@@ -43,6 +41,11 @@
 </div>
 
 <div class="container">
+    <div class="md-3 d-flex justify-content-center">
+        <#if error?? >
+            <div class="alert alert-danger" role="alert">${error}</div>
+        </#if>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -50,6 +53,7 @@
                 <th scope="col">Nom</th>
                 <th scope="col">Prénom</th>
                 <th scope="col">Informations Patient</th>
+                <th scope="col">Notes Patient</th>
                 <th scope="col">Suppression Patient</th>
             </tr>
         </thead>
@@ -58,9 +62,10 @@
                 <#assign idPatient>${patient.idPatient}</#assign>
                 <tr>
                     <th scope="row">${patient.idPatient}</th>
-                    <td>${patient.prenom}</td>
                     <td>${patient.nom}</td>
-                    <td><a href="/patients/${idPatient}">Fichier Patient - ${patient.prenom} ${patient.nom}</a></td>
+                    <td>${patient.prenom}</td>
+                    <td><a href="/patients/${idPatient}">Fichier Patient</a></td>
+                    <td><a href="/doc/newPatientNoteForm/${patient.nom}&${idPatient}">Nouvelle Note</a> - <a href="/doc/note-patient/${patient.nom}">Historique</a></td>
                     <td><a href="/patients/delete-patient/${idPatient}">Supprimer ce patient</a></td>
                 </tr>
             </#list>

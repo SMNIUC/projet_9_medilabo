@@ -9,19 +9,21 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-public class CustomAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
-
-    private final RedirectServerAuthenticationSuccessHandler delegate = new RedirectServerAuthenticationSuccessHandler();
+public class CustomAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler
+{
+    private final RedirectServerAuthenticationSuccessHandler delegate = new RedirectServerAuthenticationSuccessHandler( );
 
     @Override
-    public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
-        ServerWebExchange exchange = webFilterExchange.getExchange();
+    public Mono<Void> onAuthenticationSuccess( WebFilterExchange webFilterExchange, Authentication authentication )
+    {
+        ServerWebExchange exchange = webFilterExchange.getExchange( );
+
         // Redirect to the original requested URL or fallback to "/"
-        return exchange.getSession().flatMap(session -> {
-            String targetUrl = (String) session.getAttributes()
-                    .getOrDefault("SPRING_SECURITY_SAVED_REQUEST", "/");
-            delegate.setLocation(URI.create(targetUrl));
-            return delegate.onAuthenticationSuccess(webFilterExchange, authentication);
+        return exchange.getSession( ).flatMap( session ->
+        {
+            String targetUrl = "http://localhost:8084/home";
+            delegate.setLocation( URI.create( targetUrl ) );
+            return delegate.onAuthenticationSuccess( webFilterExchange, authentication) ;
         });
     }
 }

@@ -1,20 +1,18 @@
 package fr.openclassrooms.medilabo.patient.controller;
 
 import fr.openclassrooms.medilabo.patient.domain.Patient;
-import fr.openclassrooms.medilabo.patient.exceptions.PatientNotFoundException;
 import fr.openclassrooms.medilabo.patient.service.PatientApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -26,56 +24,50 @@ public class PatientApiController
     @GetMapping("/patients/list")
     public List<Patient> getPatientList( )
     {
-        List<Patient> patientList = patientApiService.getAllPatients( );
-
-        if( patientList.isEmpty( ) )
-            throw new PatientNotFoundException( "Aucun patient n'est disponible.");
-
-        return patientList;
+        return patientApiService.getAllPatients( );
     }
 
     @GetMapping("/patients/{id}")
     public Patient getPatientById( @PathVariable("id") int patientId )
     {
-        Patient patient = patientApiService.findPatientById( patientId );
-
-        if( patient == null )
-            throw new PatientNotFoundException( "Le patient avec l'id " + patientId + " est introuvable.");
-
-        return  patient;
+        return patientApiService.findPatientById( patientId );
     }
 
     @PostMapping("/patients/addNewPatient")
-    public ResponseEntity<Patient> addNewPatient( @Valid @RequestBody MultiValueMap<String, String> formData )
+    public ResponseEntity<?> addNewPatient( @Valid @RequestBody Patient newPatient )
     {
-        // TODO - update error
-//        if ( result.hasErrors( ) )
-//        {
-//            throw new RuntimeException();
-//        }
-
-        Patient patientAdded = patientApiService.addNewPatient( formData );
-
-        if( Objects.isNull( patientAdded ) )
+        try
         {
-            // TODO - return generic error that'll be interpreted by the front w/ throw
-//            throw new ImpossibleAjouterCommandeException("Impossible d'ajouter cette commande"); ->> 500 error - internal error
-            return ResponseEntity.noContent( ).build( );
+            Patient patientAdded = patientApiService.addNewPatient( newPatient );
+
+            if ( patientAdded == null )
+            {
+                return ResponseEntity.status( HttpStatus.NO_CONTENT )
+                        .body( Map.of( "error", "Unable to add patient. Please try again." ) );
+            }
+
+            // Build the location URI for the created resource
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest( )
+                    .path( "/{id}" )
+                    .buildAndExpand( patientAdded.getIdPatient( ) )
+                    .toUri( );
+
+            // Return a 201 Created response
+            return ResponseEntity.created( location ).build( );
         }
+        catch ( Exception e )
+        {
+            // Handle unexpected exceptions
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+                    .body( Map.of( "error", "An unexpected error occurred: " + e.getMessage( ) ) );
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest( )
-                .path( "/{id}" )
-                .buildAndExpand( patientAdded.getIdPatient( ) )
-                .toUri( );
-
-        // TODO - returns a Patient? Is it needed?
-        return ResponseEntity.created( location ).build( );
+        }
     }
 
-//    // TODO - need patientId?
+    // TODO - need patientId?
     @PostMapping("/patients/{id}")
-    public ResponseEntity<Patient> updatePatient( @RequestBody MultiValueMap<String, String> formData, @PathVariable int id )
+    public ResponseEntity<Patient> updatePatient( @RequestBody Patient updatedPatient, @PathVariable String id )
     {
         ResponseEntity<Patient> response;
 
@@ -83,7 +75,7 @@ public class PatientApiController
 //        {
 //            response = ResponseEntity.status( HttpStatus.NOT_IMPLEMENTED ).body( null );
 //        } else {
-            response = ResponseEntity.status( HttpStatus.CREATED ).body( patientApiService.updatePatient( id, formData ) );
+            response = ResponseEntity.status( HttpStatus.CREATED ).body( patientApiService.updatePatient( updatedPatient, id ) );
 //        }
 
         return response;

@@ -1,6 +1,7 @@
 package fr.openclassrooms.medilabo.site.controller;
 
 import fr.openclassrooms.medilabo.site.domain.PatientDTO;
+import fr.openclassrooms.medilabo.site.service.PatientDTOService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,12 +14,22 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class PatientSiteController
 {
     private final RestTemplate restTemplate;
+    private final PatientDTOService patientDTOService;
+
+    // TODO - implement spring security
+    private HttpHeaders getAuthHeaders( )
+    {
+        HttpHeaders headers = new HttpHeaders( );
+        headers.setBasicAuth("user", "user");
+        return headers;
+    }
 
     @Value( "${gateway.url}" )
     private String gatewayUrl;
@@ -26,44 +37,53 @@ public class PatientSiteController
     @GetMapping("/patients/list")
     public String patientList( Model model )
     {
-        try
-        {
-            String endpoint = "/patients/list";
-            String url = gatewayUrl + endpoint;
+        String endpoint = "/patients/list";
+        HttpEntity<?> entity = new HttpEntity<>( getAuthHeaders( ) );
 
-            // Fetch the response as a List of Products
-            ResponseEntity<List<PatientDTO>> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<>( )
-                    {
-                    }
-            );
+        // Fetch the response as a List of Products
+        ResponseEntity<List<PatientDTO>> response = restTemplate
+                .exchange(
+                        gatewayUrl + endpoint,
+                        HttpMethod.GET,
+                        entity,
+                        new ParameterizedTypeReference<>( ) {}
+        );
 
-            model.addAttribute( "patients", response.getBody( ) );
+        model.addAttribute( "patients", response.getBody( ) );
 
-            return "patient/patient-list";
-        } catch ( HttpClientErrorException e) {
-            if ( e.getStatusCode( ) == HttpStatus.UNAUTHORIZED )  {
-                // Redirect the user to the login page
-                return "redirect:" + gatewayUrl + "/login";
-            }
-            throw e;
-        }
+        return "patient/patient-list";
     }
 
     @GetMapping("/patients/{id}")
     public String patientProfilePage( Model model, @PathVariable int id )
     {
-        String endpoint = "/patients/" + id;
-        String url = gatewayUrl + endpoint;
+        try
+        {
+            String endpoint = "/patients/" + id;
 
-        PatientDTO patient = restTemplate.getForObject( url, PatientDTO.class );
+            HttpEntity<?> entity = new HttpEntity<>( getAuthHeaders( ) );
 
-        model.addAttribute("patient", patient );
+            PatientDTO patient = restTemplate.exchange(
+                    gatewayUrl + endpoint,
+                            HttpMethod.GET,
+                            entity,
+                            PatientDTO.class
+                    ).getBody( );
 
-        return "patient/patient-profile";
+            model.addAttribute("patient", patient );
+
+            return "patient/patient-profile";
+        }
+        catch ( HttpClientErrorException e )
+        {
+            model.addAttribute( "error", "Error occurred while fetching patient: " + e.getResponseBodyAsString( ) );
+            return "patient/patient-profile";
+        }
+        catch ( Exception e )
+        {
+            model.addAttribute( "error", "An unexpected error occurred: " + e.getMessage( ) );
+            return "patient/patient-profile";
+        }
     }
 
     @GetMapping("/patients/newPatientForm")
@@ -72,46 +92,125 @@ public class PatientSiteController
         return "patient/new-patient-form";
     }
 
+    // TODO - error msgs
     @PostMapping("/patients/addNewPatient")
     public String addNewPatient( @RequestBody MultiValueMap<String, String> formData, Model model )
     {
-        HttpHeaders headers = new HttpHeaders( );
-        headers.setContentType( MediaType.APPLICATION_FORM_URLENCODED );
+        try
+        {
+            HttpHeaders headers = getAuthHeaders( );
+            String url = gatewayUrl + "/patients";
 
-        String endpoint = "/patients/addNewPatient";
-        String url = gatewayUrl + endpoint;
+            HttpEntity<PatientDTO> requestEntity = new HttpEntity<>( patientDTOService.convertFormDataIntoPatientDTO( formData ), headers );
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>( formData, headers );
-        ResponseEntity<PatientDTO> response = restTemplate.exchange( url, HttpMethod.POST, request, PatientDTO.class );
+            ResponseEntity<?> response = restTemplate.postForEntity( url, requestEntity, String.class );
 
-        model.addAttribute("patient", response.getBody( ) );
+            // Check the response status
+            if ( response.getStatusCode( ) == HttpStatus.NO_CONTENT )
+            {
+                model.addAttribute( "error", "Unable to add patient. Please try again." );
+                return "patient/new-patient-form";
+            }
+            else if ( response.getStatusCode( ) == HttpStatus.CREATED )
+            {
+                return "redirect:/patients/list";
+            }
+            else
+            {
+                model.addAttribute( "error", "Unexpected response from gateway: " + response.getStatusCode( ) );
+                return "patient/new-patient-form";
+            }
+        }
 
-        return patientList( model );
+        catch ( HttpClientErrorException e )
+        {
+            if ( e.getStatusCode( ) == HttpStatus.BAD_REQUEST )
+            {
+                // Pass validation errors back to the Thymeleaf template
+                Map<String, String> errors = e.getResponseBodyAs( Map.class );
+                model.addAttribute("errors", errors );
+
+                return "patient/new-patient-form";
+            }
+            else
+            {
+                model.addAttribute( "error", "Failed to add new patient: " + e.getResponseBodyAsString( ) );
+                return "patient/new-patient-form";
+            }
+        }
+
+        catch ( Exception e )
+        {
+            model.addAttribute( "error", "An unexpected error occurred: " + e.getMessage( ) );
+            return "patient/new-patient-form";
+        }
     }
 
     @PostMapping("/patients/{id}")
     public String updatePatientInfo( @RequestBody MultiValueMap<String, String> formData, @PathVariable int id, Model model )
     {
-        HttpHeaders headers = new HttpHeaders( );
-        headers.setContentType( MediaType.APPLICATION_FORM_URLENCODED );
+        try
+        {
+            HttpHeaders headers = getAuthHeaders( );
+            String endpoint = "/patients/" + id;
+            String url = gatewayUrl + endpoint;
 
-        String endpoint = "/patients/" +id ;
-        String url = gatewayUrl + endpoint;
+            PatientDTO updatedPatient = patientDTOService.convertFormDataIntoPatientDTO( formData );
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>( formData, headers );
-        restTemplate.exchange( url, HttpMethod.POST, request, PatientDTO.class );
+            HttpEntity<PatientDTO> requestEntity = new HttpEntity<>( updatedPatient , headers );
 
-        return patientProfilePage( model, id );
+            ResponseEntity<String> response = restTemplate.postForEntity( url, requestEntity, String.class );
+
+            if ( response.getStatusCode( ) == HttpStatus.CREATED )
+            {
+                model.addAttribute("patient", updatedPatient );
+                return "patient/patient-profile";
+            }
+            else
+            {
+                model.addAttribute( "error", "Unexpected response from gateway: " + response.getStatusCode( ) );
+                return "patient/patient-profile";
+            }
+        }
+
+        catch ( HttpClientErrorException e )
+        {
+            model.addAttribute( "error", "Failed to add new patient: " + e.getResponseBodyAsString( ) );
+            return "patient/patient-profile";
+        }
+
+        catch ( Exception e )
+        {
+            model.addAttribute( "error", "An unexpected error occurred: " + e.getMessage( ) );
+            return "patient/patient-profile";
+        }
     }
 
     @GetMapping("/patients/delete-patient/{id}")
     public String deletePatient( @PathVariable int id, Model model )
     {
-        String endpoint = "/patients/delete-patient/" +id ;
-        String url = gatewayUrl + endpoint;
+        try
+        {
+            String endpoint = "/patients/delete-patient/" + id;
+            String url = gatewayUrl + endpoint;
 
-        restTemplate.delete( url );
+            // Create new headers dynamically to ensure they are fresh for this specific request
+            HttpHeaders headers = getAuthHeaders( );
+            HttpEntity<?> entity = new HttpEntity<>( headers );
 
-        return patientList( model );
+            restTemplate.exchange( url, HttpMethod.DELETE, entity, Void.class );
+
+            return patientList( model );
+        }
+        catch ( HttpClientErrorException e )
+        {
+            model.addAttribute( "error", "Error occurred while deleting patient: " + e.getResponseBodyAsString( ) );
+            return "patient/patient-list";
+        }
+        catch ( Exception e )
+        {
+            model.addAttribute( "error", "An unexpected error occurred: " + e.getMessage( ) );
+            return "patient/patient-list";
+        }
     }
 }

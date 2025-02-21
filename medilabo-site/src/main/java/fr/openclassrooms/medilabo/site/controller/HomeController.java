@@ -11,6 +11,6 @@ public class HomeController
     @GetMapping("/home")
     public String getHomePage( )
     {
-        return "redirect:http://localhost:8080/login";
+        return "home";
     }
 }

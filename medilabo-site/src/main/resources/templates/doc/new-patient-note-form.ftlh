@@ -50,46 +50,23 @@
                 </#if>
             </div>
             <div class="d-flex justify-content-start" id="transaction-title">
-                <h5>Formulaire Nouveau Patient</h5>
+                <h5>Nouvelle Note Patient</h5>
             </div>
-            <form method="post" action="/patients/addNewPatient" id="newPatientForm">
+            <form method="post" action="/doc/write-note" id="newPatientNoteForm">
+                <input type="hidden" name="patientName" value="${patientName}">
+                <input type="hidden" name="patientId" value="${patientId}">
                 <div class="mb-3">
-                    <label for="nom" class="form-label">Nom</label>
-                    <input type="text" name="nom" class="form-control" id="nom" aria-describedby="nomHelp">
-                    <#if errors?? && errors["nom"]?? >
-                        <div class="alert alert-danger" role="alert">${errors["nom"]}</div>
-                    </#if>
+                    <label for="nom" class="form-label">Nom du patient</label>
+                    <input type="text" name="nom" class="form-control" id="nom" aria-describedby="nomHelp" value="${patientName}" disabled>
                 </div>
                 <div class="mb-3">
-                    <label for="prenom" class="form-label">Prénom</label>
-                    <input type="text" name="prenom" class="form-control" id="prenom" aria-describedby="prenomHelp">
-                    <#if errors?? && errors["prenom"]?? >
-                        <div class="alert alert-danger" role="alert">${errors["prenom"]}</div>
-                    </#if>
+                    <label for="note" class="form-label">Note</label>
+                    <input type="text" name="note" class="form-control" id="note" aria-describedby="noteHelp">
+                    <!-- <#if errors?? && errors["note"]?? >
+                        <div class="alert alert-danger" role="alert">${errors["note"]}</div>
+                    </#if> -->
                 </div>
-                <div class="mb-3">
-                    <label for="dateNaissance" class="form-label">Date de Naissance</label>
-                    <input type="text" name="dateNaissance" class="form-control" id="dateNaissance" aria-describedby="dateNaissanceHelp">
-                    <#if errors?? && errors["dateNaissance"]?? >
-                        <div class="alert alert-danger" role="alert">${errors["dateNaissance"]}</div>
-                    </#if>
-                </div>
-                <div class="mb-3">
-                    <label for="genre" class="form-label">Genre</label>
-                    <input type="text" name="genre" class="form-control" id="genre" aria-describedby="genreHelp">
-                    <#if errors?? && errors["genre"]?? >
-                        <div class="alert alert-danger" role="alert">${errors["genre"]}</div>
-                    </#if>
-                </div>
-                <div class="mb-3">
-                    <label for="adresse" class="form-label">Adresse</label>
-                    <input type="text" name="adresse" class="form-control" id="adresse" aria-describedby="adresseHelp">
-                </div>
-                <div class="mb-3">
-                    <label for="telephone" class="form-label">Numéro de téléphone</label>
-                    <input type="text" name="telephone" class="form-control" id="telephone" aria-describedby="telephoneHelp">
-                </div>
-                <button type="submit" class="btn btn-primary">Ajouter ce nouveau patient</button>
+                <button type="submit" class="btn btn-primary">Sauvegarder cette note</button>
             </form>
         </div>
     </div>
