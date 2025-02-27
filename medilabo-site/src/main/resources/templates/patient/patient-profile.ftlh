@@ -16,17 +16,9 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/home">
+                <a class="navbar-brand" href="/patients/list">
                     <button type="button" class="button-37" role="button">MediLabo</button>
                 </a>
-                <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-link text-dark" href="/home">Accueil</a>
-                        <a class="nav-link text-dark" href="/patients/list">Liste des Patients</a>
-                        <a class="nav-link text-dark" href="/contact">Nous Contacter</a>
-                        <a class="nav-link text-dark" href="/logout">Déconnection</a>
-                    </div>
-                </div>
             </div>
         </nav>
     </div>
@@ -34,7 +26,6 @@
     <div class="container bg-light">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/home">Accueil</a></li>
                 <li class="breadcrumb-item"><a href="/patients/list">Liste des Patients</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Profile Patient</li>
             </ol>
@@ -48,9 +39,12 @@
                     <#if error?? >
                         <div class="alert alert-danger" role="alert">${error}</div>
                     </#if>
+                    <#if success?? >
+                        <div class="alert alert-success" role="alert">${success}</div>
+                    </#if>
                 </div>
                 <div class="d-flex justify-content-start" id="transaction-title">
-                    <h5>Informations du Patient</h5>
+                    <h5>Informations du Patient <span class="badge bg-info text-dark">Statut : ${patient.statut}</span></h5>
                 </div>
                 <form method="post" action="/patients/${patient.idPatient}" id="updatePatientInfoForm">
                     <input type="hidden" name="idpatient" value="${patient.idPatient}">
@@ -64,7 +58,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="dateNaissance" class="form-label">Date de Naissance</label>
-                        <input type="text" name="dateNaissance" class="form-control" id="dateNaissance" aria-describedby="dateNaissanceHelp" value="${patient.dateNaissance}">
+                        <input type="text" name="dateNaissance" placeholder="YYYY-MM-DD" class="form-control" id="dateNaissance" aria-describedby="dateNaissanceHelp" value="${patient.dateNaissance}">
                     </div>
                     <div class="mb-3">
                         <label for="genre" class="form-label">Genre</label>
@@ -72,19 +66,18 @@
                     </div>
                     <div class="mb-3">
                         <label for="adresse" class="form-label">Adresse</label>
-                        <input type="text" name="adresse" class="form-control" id="adresse" aria-describedby="adresseHelp" value="${patient.adresse}!">
+                        <input type="text" name="adresse" class="form-control" id="adresse" aria-describedby="adresseHelp" value="${patient.adresse!}">
                     </div>
                     <div class="mb-3">
                         <label for="telephone" class="form-label">Numéro de téléphone</label>
-                        <input type="text" name="telephone" class="form-control" id="telephone" aria-describedby="telephoneHelp" value="${patient.telephone}!">
+                        <input type="text" name="telephone" class="form-control" id="telephone" aria-describedby="telephoneHelp" value="${patient.telephone!}">
                     </div>
                     <button type="submit" class="btn btn-primary">Mettre à jour les informations</button>
+                    <a class="btn btn-outline-primary" href="/doc/note-patient/${patient.nom}" role="button">Notes patient</a>
                 </form>
             </div>
         </div>
     </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

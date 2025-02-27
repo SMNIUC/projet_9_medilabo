@@ -21,7 +21,7 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
         // Redirect to the original requested URL or fallback to "/"
         return exchange.getSession( ).flatMap( session ->
         {
-            String targetUrl = "http://localhost:8084/home";
+            String targetUrl = "http://localhost:8084/patients/list";
             delegate.setLocation( URI.create( targetUrl ) );
             return delegate.onAuthenticationSuccess( webFilterExchange, authentication) ;
         });

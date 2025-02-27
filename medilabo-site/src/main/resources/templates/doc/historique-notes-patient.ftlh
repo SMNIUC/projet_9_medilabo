@@ -16,17 +16,9 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/home">
+            <a class="navbar-brand" href="/patients/list">
                 <button type="button" class="button-37" role="button">MediLabo</button>
             </a>
-            <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link text-dark" href="/home">Accueil</a>
-                    <a class="nav-link text-dark" aria-current="page" href="/patients/list">Liste des Patients</a>
-                    <a class="nav-link text-dark" href="/contact">Nous Contacter</a>
-                    <a class="nav-link text-dark" href="/logout">Déconnection</a>
-                </div>
-            </div>
         </div>
     </nav>
 </div>
@@ -34,7 +26,7 @@
 <div class="container bg-light">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/home">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/patients/list">Liste des Patients</a></li>
             <li class="breadcrumb-item active" aria-current="page">Historique des Notes du Patient</li>
         </ol>
     </nav>
@@ -54,16 +46,22 @@
         </tr>
         </thead>
         <tbody>
-        <#list notes as note>
+        <#if notes?? && notes?size gt 0>
+            <#list notes as note>
+                <tr>
+                    <th scope="row">${note._id}</th>
+                    <td>${note.note}</td>
+                </tr>
+            </#list>
+        <#else>
             <tr>
-                <th scope="row">${note._id}</th>
-                <td>${note.note}</td>
+                <td colspan="2">Aucune note pour ce patient</td>
             </tr>
-        </#list>
+        </#if>
         </tbody>
     </table>
+    <a class="btn btn-primary" href="/doc/newPatientNoteForm/${patientName!}&${patientId!}" role="button">Ajouter une nouvelle note</a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

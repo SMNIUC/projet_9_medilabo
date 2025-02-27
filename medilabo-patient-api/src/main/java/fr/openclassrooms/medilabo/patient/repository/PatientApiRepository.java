@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientApiRepository extends CrudRepository<Patient, String>
 {
+    Patient findPatientIdByNom( String patientName );
 }

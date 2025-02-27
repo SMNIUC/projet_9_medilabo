@@ -22,20 +22,26 @@ public class ReportingPatientDTOService
 
         for( PatientDTO patientDTO : patientDTOList )
         {
-            ReportingPatientDTO reportingPatientDTO = new ReportingPatientDTO( );
-            reportingPatientDTO.setIdPatient( patientDTO.getIdPatient( ) );
-            reportingPatientDTO.setPrenom( patientDTO.getPrenom( ) );
-            reportingPatientDTO.setNom( patientDTO.getNom( ) );
-            reportingPatientDTO.setDateNaissance( patientDTO.getDateNaissance( ) );
-            reportingPatientDTO.setGenre( patientDTO.getGenre( ) );
-            reportingPatientDTO.setAdresse( patientDTO.getAdresse( ) );
-            reportingPatientDTO.setTelephone( patientDTO.getTelephone( ) );
-            reportingPatientDTO.setStatut( getPatientStatut( String.valueOf( patientDTO.getIdPatient( ) ) ) );
-
-            reportingPatientDTOList.add( reportingPatientDTO );
+            reportingPatientDTOList.add( getReportingPatientDTO( patientDTO) );
         }
 
         return reportingPatientDTOList;
+    }
+
+    public ReportingPatientDTO getReportingPatientDTO( PatientDTO patientDTO )
+    {
+        ReportingPatientDTO reportingPatientDTO = new ReportingPatientDTO( );
+
+        reportingPatientDTO.setIdPatient( patientDTO.getIdPatient( ) );
+        reportingPatientDTO.setPrenom( patientDTO.getPrenom( ) );
+        reportingPatientDTO.setNom( patientDTO.getNom( ) );
+        reportingPatientDTO.setDateNaissance( patientDTO.getDateNaissance( ) );
+        reportingPatientDTO.setGenre( patientDTO.getGenre( ) );
+        reportingPatientDTO.setAdresse( patientDTO.getAdresse( ) );
+        reportingPatientDTO.setTelephone( patientDTO.getTelephone( ) );
+        reportingPatientDTO.setStatut( getPatientStatut( String.valueOf( patientDTO.getIdPatient( ) ) ) );
+
+        return reportingPatientDTO;
     }
 
     private String getPatientStatut( String patientId )

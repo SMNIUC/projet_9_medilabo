@@ -2,6 +2,7 @@ package fr.openclassrooms.medilabo.patient.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -23,6 +24,7 @@ public class Patient
     private String prenom;
 
     @NotBlank(message = "Le champ Date de Naissance ne peut pas etre vide.")
+    @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "La date doit suivre le format YYYY-MM-DD.")
     @Column(name = "date_naissance")
     private String dateNaissance;
 

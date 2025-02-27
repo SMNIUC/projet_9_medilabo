@@ -25,6 +25,7 @@ public class DocSiteController
 {
     private final RestTemplate restTemplate;
     private final NotePatientDTOService notePatientDTOService;
+    private final PatientSiteController patientSiteController;
 
     // TODO - implement spring security
     private HttpHeaders getAuthHeaders( )
@@ -36,26 +37,6 @@ public class DocSiteController
 
     @Value( "${gateway.url}" )
     private String gatewayUrl;
-
-    @GetMapping("/doc/notes")
-    public String getPatientNotes( Model model )
-    {
-        String endpoint = "/doc/notes";
-        HttpEntity<?> entity = new HttpEntity<>( getAuthHeaders( ) );
-
-        // Fetch the response as a List of NotePatient
-        ResponseEntity<List<NotePatientDTO>> response = restTemplate
-                .exchange(
-                        gatewayUrl + endpoint,
-                        HttpMethod.GET,
-                        entity,
-                        new ParameterizedTypeReference<>( ) {}
-                );
-
-        model.addAttribute( "notes", response.getBody( ) );
-
-        return "doc/notes";
-    }
 
     @GetMapping("/doc/note-patient/{patientName}")
     public String historiqueNotesPatient( Model model, @PathVariable String patientName )
@@ -74,6 +55,7 @@ public class DocSiteController
                             new ParameterizedTypeReference<>( ) {}
                     );
 
+            model.addAttribute( "patientId", patientSiteController.getPatientIdByName( patientName) );
             model.addAttribute( "notes", response.getBody( ) );
 
             return "doc/historique-notes-patient";
@@ -100,14 +82,16 @@ public class DocSiteController
 
     // TODO - error msgs
     @PostMapping("/doc/write-note")
-    public String addNewPatient( @RequestBody MultiValueMap<String, String> formData, Model model )
+    public String addNewPatientNote( @RequestBody MultiValueMap<String, String> formData, Model model )
     {
         try
         {
             HttpHeaders headers = getAuthHeaders( );
             String url = gatewayUrl + "/doc/write-note";
 
-            HttpEntity<NotePatientDTO> requestEntity = new HttpEntity<>( notePatientDTOService.convertFormDataIntoNotePatientDTO( formData ), headers );
+            NotePatientDTO notePatientDTO = notePatientDTOService.convertFormDataIntoNotePatientDTO( formData );
+
+            HttpEntity<NotePatientDTO> requestEntity = new HttpEntity<>( notePatientDTO, headers );
 
             ResponseEntity<?> response = restTemplate.postForEntity( url, requestEntity, String.class );
 
@@ -119,7 +103,7 @@ public class DocSiteController
             }
             else if ( response.getStatusCode( ) == HttpStatus.CREATED )
             {
-                return "redirect:/patients/list";
+                return "redirect:/doc/note-patient/" + notePatientDTO.getPatient( );
             }
             else
             {

@@ -33,6 +33,12 @@ public class PatientApiController
         return patientApiService.findPatientById( patientId );
     }
 
+    @GetMapping("/patients/getPatientId/{patientName}")
+    public String getPatientIdByName( @PathVariable String patientName )
+    {
+        return patientApiService.getPatientIdByName( patientName );
+    }
+
     @PostMapping("/patients/addNewPatient")
     public ResponseEntity<?> addNewPatient( @Valid @RequestBody Patient newPatient )
     {

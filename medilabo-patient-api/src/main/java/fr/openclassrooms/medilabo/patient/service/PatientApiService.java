@@ -75,4 +75,9 @@ public class PatientApiService
         Patient patientToDelete = findPatientById( idPatient );
         patientRepository.delete( patientToDelete );
     }
+
+    public String getPatientIdByName( String patientName )
+    {
+        return String.valueOf( patientRepository.findPatientIdByNom( patientName ).getIdPatient( ) );
+    }
 }

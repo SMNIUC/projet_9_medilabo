@@ -92,9 +92,15 @@ public class PatientSiteController
                             PatientDTO.class
                     ).getBody( );
 
-            model.addAttribute("patient", patient );
+            ReportingPatientDTO reportingPatientDTO = new ReportingPatientDTO( );
+            if ( patient != null )
+            {
+                reportingPatientDTO = reportingPatientDTOService.getReportingPatientDTO( patient );
+            }
+
+            model.addAttribute("patient", reportingPatientDTO );
             
-            return "patient/patient-list";
+            return "patient/patient-profile";
         }
         catch ( HttpClientErrorException e )
         {
@@ -106,6 +112,23 @@ public class PatientSiteController
             model.addAttribute( "error", "An unexpected error occurred: " + e.getMessage( ) );
             return "patient/patient-profile";
         }
+    }
+
+    @GetMapping("/patients/getPatientId/{patientName}")
+    public String getPatientIdByName( @PathVariable String patientName )
+    {
+        String endpoint = "/patients/getPatientId/" + patientName;
+
+        HttpEntity<?> entity = new HttpEntity<>( getAuthHeaders( ) );
+
+        ResponseEntity<String> patientId = restTemplate.exchange(
+                gatewayUrl + endpoint,
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+
+        return patientId.getBody( );
     }
 
     @GetMapping("/patients/newPatientForm")
@@ -171,13 +194,13 @@ public class PatientSiteController
     @PostMapping("/patients/{id}")
     public String updatePatientInfo( @RequestBody MultiValueMap<String, String> formData, @PathVariable int id, Model model )
     {
+        PatientDTO updatedPatient = patientDTOService.convertFormDataIntoPatientDTO( formData );
+
         try
         {
             HttpHeaders headers = getAuthHeaders( );
             String endpoint = "/patients/" + id;
             String url = gatewayUrl + endpoint;
-
-            PatientDTO updatedPatient = patientDTOService.convertFormDataIntoPatientDTO( formData );
 
             HttpEntity<PatientDTO> requestEntity = new HttpEntity<>( updatedPatient , headers );
 
@@ -186,10 +209,12 @@ public class PatientSiteController
             if ( response.getStatusCode( ) == HttpStatus.CREATED )
             {
                 model.addAttribute("patient", updatedPatient );
+                model.addAttribute( "success", "Patient information updated successfully." );
                 return "patient/patient-profile";
             }
             else
             {
+                model.addAttribute("patient", updatedPatient );
                 model.addAttribute( "error", "Unexpected response from gateway: " + response.getStatusCode( ) );
                 return "patient/patient-profile";
             }
@@ -197,12 +222,14 @@ public class PatientSiteController
 
         catch ( HttpClientErrorException e )
         {
-            model.addAttribute( "error", "Failed to add new patient: " + e.getResponseBodyAsString( ) );
+            model.addAttribute("patient", updatedPatient );
+            model.addAttribute( "error", "Failed to update patient: " + e.getResponseBodyAsString( ) );
             return "patient/patient-profile";
         }
 
         catch ( Exception e )
         {
+            model.addAttribute("patient", updatedPatient );
             model.addAttribute( "error", "An unexpected error occurred: " + e.getMessage( ) );
             return "patient/patient-profile";
         }
