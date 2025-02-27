@@ -1,7 +1,9 @@
 package fr.openclassrooms.medilabo.site.controller;
 
 import fr.openclassrooms.medilabo.site.domain.PatientDTO;
+import fr.openclassrooms.medilabo.site.domain.ReportingPatientDTO;
 import fr.openclassrooms.medilabo.site.service.PatientDTOService;
+import fr.openclassrooms.medilabo.site.service.ReportingPatientDTOService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +25,7 @@ public class PatientSiteController
 {
     private final RestTemplate restTemplate;
     private final PatientDTOService patientDTOService;
+    private final ReportingPatientDTOService reportingPatientDTOService;
 
     // TODO - implement spring security
     private HttpHeaders getAuthHeaders( )
@@ -40,16 +44,34 @@ public class PatientSiteController
         String endpoint = "/patients/list";
         HttpEntity<?> entity = new HttpEntity<>( getAuthHeaders( ) );
 
-        // Fetch the response as a List of Products
-        ResponseEntity<List<PatientDTO>> response = restTemplate
-                .exchange(
-                        gatewayUrl + endpoint,
-                        HttpMethod.GET,
-                        entity,
-                        new ParameterizedTypeReference<>( ) {}
-        );
+        try {
+            // Fetch the response as a List of Products
+            ResponseEntity<List<PatientDTO>> response = restTemplate
+                    .exchange(
+                            gatewayUrl + endpoint,
+                            HttpMethod.GET,
+                            entity,
+                            new ParameterizedTypeReference<>( ) {
+                            }
+                    );
 
-        model.addAttribute( "patients", response.getBody( ) );
+            List<ReportingPatientDTO> reportingPatientDTOList = new ArrayList<>( );
+            if ( response.getBody( ) != null && !response.getBody( ).isEmpty( ) )
+            {
+                reportingPatientDTOList = reportingPatientDTOService.getReportingPatientDTOList( response.getBody( ) );
+            }
+
+            model.addAttribute( "patients", reportingPatientDTOList );
+        }
+        catch ( HttpClientErrorException e )
+        {
+            model.addAttribute("error", "Unable to fetch the patient list. Please check the backend API.");
+        }
+        catch ( Exception e )
+        {
+            model.addAttribute("error", "An unexpected error occurred while fetching the patient list.");
+            throw new RuntimeException( e );
+        }
 
         return "patient/patient-list";
     }
@@ -71,8 +93,8 @@ public class PatientSiteController
                     ).getBody( );
 
             model.addAttribute("patient", patient );
-
-            return "patient/patient-profile";
+            
+            return "patient/patient-list";
         }
         catch ( HttpClientErrorException e )
         {
