@@ -1,0 +1,98 @@
+services:
+  medilabo-doc-api:
+    build:
+      context: ./medilabo-doc-api
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/notes_patient
+    depends_on:
+      - mongo-db
+    networks:
+      - medilabo-network
+
+  medilabo-gateway:
+    build:
+      context: ./medilabo-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - medilabo-network
+
+  medilabo-patient-api:
+    build:
+      context: ./medilabo-patient-api
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/medilabo
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootroot
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+    depends_on:
+      - mysql-db
+    networks:
+      - medilabo-network
+
+  medilabo-reporting-api:
+    build:
+      context: ./medilabo-reporting-api
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    networks:
+      - medilabo-network
+
+  medilabo-site:
+    build:
+      context: ./medilabo-site
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
+    networks:
+      - medilabo-network
+
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_DATABASE: medilabo
+      MYSQL_PASSWORD: rootroot
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - medilabo-network
+
+  mongo-db:
+    image: mongo:6.0
+    container_name: mongo-db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+      MONGO_INITDB_DATABASE: notes_patient
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - medilabo-network
+
+networks:
+  medilabo-network:
+
+volumes:
+  mysql_data:
+  mongo_data:
