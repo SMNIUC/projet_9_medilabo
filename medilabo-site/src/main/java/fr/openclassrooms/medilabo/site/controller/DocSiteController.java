@@ -1,7 +1,9 @@
 package fr.openclassrooms.medilabo.site.controller;
 
 import fr.openclassrooms.medilabo.site.domain.NotePatientDTO;
+import fr.openclassrooms.medilabo.site.domain.User;
 import fr.openclassrooms.medilabo.site.service.NotePatientDTOService;
+import fr.openclassrooms.medilabo.site.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,12 +28,15 @@ public class DocSiteController
     private final RestTemplate restTemplate;
     private final NotePatientDTOService notePatientDTOService;
     private final PatientSiteController patientSiteController;
+    private final UserService userService;
 
-    // TODO - implement spring security
     private HttpHeaders getAuthHeaders( )
     {
         HttpHeaders headers = new HttpHeaders( );
-        headers.setBasicAuth("user", "user");
+        User user = userService.getLastUser( );
+        String username = user.getUsername( );
+        String password = user.getPassword( );
+        headers.setBasicAuth( username, password );
         return headers;
     }
 

@@ -50,18 +50,20 @@
             </tr>
         </thead>
         <tbody>
-            <#list patients as patient>
-                <#assign idPatient>${patient.idPatient}</#assign>
-                <tr>
-                    <th scope="row">${patient.idPatient}</th>
-                    <td>${patient.nom}</td>
-                    <td>${patient.prenom}</td>
-                    <td>${patient.statut}</td>
-                    <td><a href="/patients/${idPatient}">Fichier Patient</a></td>
-                    <td><a href="/doc/newPatientNoteForm/${patient.nom}&${idPatient}">Nouvelle Note</a> - <a href="/doc/note-patient/${patient.nom}">Historique</a></td>
-                    <td><a href="/patients/delete-patient/${idPatient}">Supprimer ce patient</a></td>
-                </tr>
-            </#list>
+            <#if patients?? && patients?size gt 0>
+                <#list patients as patient>
+                    <#assign idPatient>${patient.idPatient}</#assign>
+                    <tr>
+                        <th scope="row">${patient.idPatient}</th>
+                        <td>${patient.nom}</td>
+                        <td>${patient.prenom}</td>
+                        <td>${patient.statut}</td>
+                        <td><a href="/patients/${idPatient}">Fichier Patient</a></td>
+                        <td><a href="/doc/newPatientNoteForm/${patient.nom}&${idPatient}">Nouvelle Note</a> - <a href="/doc/note-patient/${patient.nom}">Historique</a></td>
+                        <td><a href="/patients/delete-patient/${idPatient}">Supprimer ce patient</a></td>
+                    </tr>
+                </#list>
+            </#if>
         </tbody>
     </table>
 </div>

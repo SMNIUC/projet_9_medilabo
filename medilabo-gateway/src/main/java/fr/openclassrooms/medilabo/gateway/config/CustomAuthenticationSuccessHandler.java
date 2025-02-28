@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
         {
             String targetUrl = "http://localhost:8084/patients/list";
             delegate.setLocation( URI.create( targetUrl ) );
-            return delegate.onAuthenticationSuccess( webFilterExchange, authentication) ;
+            return delegate.onAuthenticationSuccess( webFilterExchange, authentication );
         });
     }
 }

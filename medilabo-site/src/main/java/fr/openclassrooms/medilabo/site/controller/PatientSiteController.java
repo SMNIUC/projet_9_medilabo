@@ -2,9 +2,12 @@ package fr.openclassrooms.medilabo.site.controller;
 
 import fr.openclassrooms.medilabo.site.domain.PatientDTO;
 import fr.openclassrooms.medilabo.site.domain.ReportingPatientDTO;
+import fr.openclassrooms.medilabo.site.domain.User;
 import fr.openclassrooms.medilabo.site.service.PatientDTOService;
 import fr.openclassrooms.medilabo.site.service.ReportingPatientDTOService;
+import fr.openclassrooms.medilabo.site.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class PatientSiteController
@@ -26,12 +30,15 @@ public class PatientSiteController
     private final RestTemplate restTemplate;
     private final PatientDTOService patientDTOService;
     private final ReportingPatientDTOService reportingPatientDTOService;
+    private final UserService userService;
 
-    // TODO - implement spring security
     private HttpHeaders getAuthHeaders( )
     {
         HttpHeaders headers = new HttpHeaders( );
-        headers.setBasicAuth("user", "user");
+        User user = userService.getLastUser( );
+        String username = user.getUsername( );
+        String password = user.getPassword( );
+        headers.setBasicAuth( username, password );
         return headers;
     }
 
@@ -66,6 +73,7 @@ public class PatientSiteController
         catch ( HttpClientErrorException e )
         {
             model.addAttribute("error", "Unable to fetch the patient list. Please check the backend API.");
+            log.error("Error fetching patient list: {}", e.getMessage());
         }
         catch ( Exception e )
         {
@@ -137,7 +145,6 @@ public class PatientSiteController
         return "patient/new-patient-form";
     }
 
-    // TODO - error msgs
     @PostMapping("/patients/addNewPatient")
     public String addNewPatient( @RequestBody MultiValueMap<String, String> formData, Model model )
     {

@@ -9,28 +9,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebFluxSecurity
 public class SpringSecurityConfig
 {
-    @Bean
-    public SecurityWebFilterChain springSecurityFilterChain( ServerHttpSecurity http )
-    {
-        return http
-                .csrf( ).disable( )
-                .authorizeExchange( exchange
-                        -> exchange
-                            .anyExchange( )
-                            .authenticated( ) )
-                .httpBasic( withDefaults( ) )
-                .formLogin( formLogin -> formLogin
-                        .authenticationSuccessHandler( new CustomAuthenticationSuccessHandler( ) ) // Enables redirection
-                )
-                .build( );
-    }
-
     @Bean
     public MapReactiveUserDetailsService userDetailsService( )
     {
@@ -41,11 +23,21 @@ public class SpringSecurityConfig
                 .build( );
         return new MapReactiveUserDetailsService( user );
     }
-//
-//    // TODO -
-//    @Bean
-//    public PasswordEncoder passwordEncoder( )
-//    {
-//        return new BCryptPasswordEncoder( );
-//    }
+
+    @Bean
+    public SecurityWebFilterChain springSecurityFilterChain( ServerHttpSecurity http )
+    {
+         http
+             .csrf( ).disable( )
+             .authorizeExchange()
+                 .pathMatchers( "/login" ).permitAll( )
+             .anyExchange().authenticated()
+             .and()
+             .httpBasic().and()
+             .formLogin( formLogin -> formLogin
+                    .authenticationSuccessHandler( new CustomAuthenticationSuccessHandler( ) ) // Enables redirection
+             );
+
+        return  http.build( );
+    }
 }
