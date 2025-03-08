@@ -44,7 +44,7 @@
                     </#if>
                 </div>
                 <div class="d-flex justify-content-start" id="transaction-title">
-                    <h5>Informations du Patient <span class="badge bg-info text-dark">Statut : ${patient.statut}</span></h5>
+                    <h5>Informations du Patient <span class="badge bg-info text-dark">Statut : ${(patient.statut)!"N/A"}</span></h5>
                 </div>
                 <form method="post" action="/patients/${patient.idPatient}" id="updatePatientInfoForm">
                     <input type="hidden" name="idpatient" value="${patient.idPatient}">

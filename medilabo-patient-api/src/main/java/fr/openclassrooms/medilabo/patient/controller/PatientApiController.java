@@ -71,20 +71,10 @@ public class PatientApiController
         }
     }
 
-    // TODO - need patientId?
     @PostMapping("/patients/{id}")
     public ResponseEntity<Patient> updatePatient( @RequestBody Patient updatedPatient, @PathVariable String id )
     {
-        ResponseEntity<Patient> response;
-
-//        if ( result.hasErrors( ) )
-//        {
-//            response = ResponseEntity.status( HttpStatus.NOT_IMPLEMENTED ).body( null );
-//        } else {
-            response = ResponseEntity.status( HttpStatus.CREATED ).body( patientApiService.updatePatient( updatedPatient, id ) );
-//        }
-
-        return response;
+        return ResponseEntity.status( HttpStatus.CREATED ).body( patientApiService.updatePatient( updatedPatient, id ) );
     }
 
     @DeleteMapping("/patients/delete-patient/{id}")

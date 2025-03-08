@@ -211,7 +211,7 @@ public class PatientSiteController
 
             HttpEntity<PatientDTO> requestEntity = new HttpEntity<>( updatedPatient , headers );
 
-            ResponseEntity<String> response = restTemplate.postForEntity( url, requestEntity, String.class );
+            ResponseEntity<PatientDTO> response = restTemplate.postForEntity( url, requestEntity, PatientDTO.class);
 
             if ( response.getStatusCode( ) == HttpStatus.CREATED )
             {

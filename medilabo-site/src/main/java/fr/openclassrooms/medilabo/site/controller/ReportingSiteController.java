@@ -61,39 +61,16 @@ public class ReportingSiteController
         }
         catch (HttpClientErrorException e)
         {
-            // If the endpoint is not found (404), log and display a friendly message
-//            model.addAttribute("error", "Unable to fetch the reporting status. Please check the backend API.");
             System.err.println("Error fetching reporting status: " + e.getMessage());
             response.put( "error", e.getMessage( ) );
         }
         catch (Exception e)
         {
             // Handle other exceptions gracefully
-//            model.addAttribute("error", "An unexpected error occurred while fetching the reporting status.");
             System.err.println("Unexpected error: " + e.getMessage());
             response.put( "error", e.getMessage( ) );
         }
 
         return response;
     }
-
-//    @GetMapping("/reporting/status")
-//    public String patientList( Model model )
-//    {
-//        String endpoint = "/patients/list";
-//        HttpEntity<?> entity = new HttpEntity<>( getAuthHeaders( ) );
-//
-//        // Fetch the response as a List of Products
-//        ResponseEntity<List<PatientDTO>> response = restTemplate
-//                .exchange(
-//                        gatewayUrl + endpoint,
-//                        HttpMethod.GET,
-//                        entity,
-//                        new ParameterizedTypeReference<>( ) {}
-//                );
-//
-//        model.addAttribute( "patients", response.getBody( ) );
-//
-//        return "patient/patient-list";
-//    }
 }

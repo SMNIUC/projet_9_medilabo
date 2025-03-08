@@ -85,7 +85,6 @@ public class DocSiteController
         return "doc/new-patient-note-form";
     }
 
-    // TODO - error msgs
     @PostMapping("/doc/write-note")
     public String addNewPatientNote( @RequestBody MultiValueMap<String, String> formData, Model model )
     {

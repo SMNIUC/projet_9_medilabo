@@ -2,11 +2,14 @@ package fr.openclassrooms.medilabo.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
@@ -16,27 +19,28 @@ public class SpringSecurityConfig
     @Bean
     public MapReactiveUserDetailsService userDetailsService( )
     {
-        UserDetails user = User.withDefaultPasswordEncoder( )
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder( );
+
+        UserDetails user = User.builder( )
                 .username( "user" )
-                .password( "user" )
+                .password( encoder.encode( "user" ) )
                 .roles( "USER" )
                 .build( );
+
         return new MapReactiveUserDetailsService( user );
     }
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain( ServerHttpSecurity http )
     {
-         http
-             .csrf( ).disable( )
-             .authorizeExchange()
-                 .pathMatchers( "/login" ).permitAll( )
-             .anyExchange().authenticated()
-             .and()
-             .httpBasic().and()
-             .formLogin( formLogin -> formLogin
-                    .authenticationSuccessHandler( new CustomAuthenticationSuccessHandler( ) ) // Enables redirection
-             );
+        http
+            .csrf( ServerHttpSecurity.CsrfSpec::disable )
+            .authorizeExchange(exchanges -> exchanges
+                    .pathMatchers( "/login" ).permitAll( )
+                    .anyExchange( ).authenticated( )  // Secure everything else
+            )
+            .httpBasic( Customizer.withDefaults( ) )
+            .formLogin( Customizer.withDefaults( ) );
 
         return  http.build( );
     }

@@ -1,0 +1,180 @@
+[{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd7a"
+  },
+  "patientId": "1",
+  "patient": "TestNone",
+  "note": "Le patient déclare qu'il se sent très bien. Poids égal ou inférieur au poids recommandé."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd7b"
+  },
+  "patientId": "2",
+  "patient": "TestBorderline",
+  "note": "Le patient déclare qu'il ressent beaucoup de stress au travail. Il se plaint également que son audition est anormale dernièrement."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd7c"
+  },
+  "patientId": "2",
+  "patient": "TestBorderline",
+  "note": "Le patient déclare avoir fait une réaction aux médicaments au cours des 3 derniers mois. Il remarque également que son audition continue d'être anormale."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd7d"
+  },
+  "patientId": "3",
+  "patient": "TestInDanger",
+  "note": "Le patient déclare qu'il fume depuis peu."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd7e"
+  },
+  "patientId": "3",
+  "patient": "TestInDanger",
+  "note": "Le patient déclare qu'il est fumeur et qu'il a cessé de fumer l'année dernière. Il se plaint également de crises d’apnée respiratoire anormales. Tests de laboratoire indiquant un taux de cholestérol LDL élevé."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd7f"
+  },
+  "patientId": "4",
+  "patient": "TestEarlyOnset",
+  "note": "Le patient déclare qu'il lui est devenu difficile de monter les escaliers. Il se plaint également d’être essoufflé. Tests de laboratoire indiquant que les anticorps sont élevés. Réaction aux médicaments."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd80"
+  },
+  "patientId": "4",
+  "patient": "TestEarlyOnset",
+  "note": "Le patient déclare qu'il a mal au dos lorsqu'il reste assis pendant longtemps."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd81"
+  },
+  "patientId": "4",
+  "patient": "TestEarlyOnset",
+  "note": "Le patient déclare avoir commencé à fumer depuis peu. Hémoglobine A1C supérieure au niveau recommandé."
+},
+{
+  "_id": {
+    "$oid": "67b59d61ce3d6da85f79dd82"
+  },
+  "patientId": "4",
+  "patient": "TestEarlyOnset",
+  "note": "Taille, Poids, Cholestérol, Vertige et Réaction."
+},
+{
+  "_id": {
+    "$oid": "67b85f4468d7d10f8011bb69"
+  },
+  "patientId": "5",
+  "patient": "Pierre",
+  "note": "This is a test note! 3",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67b87aefa967fc2234de3934"
+  },
+  "patientId": "3",
+  "patient": "TestInDanger",
+  "note": "Note test",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c08b220c43b56fb3416e2d"
+  },
+  "patientId": "8",
+  "patient": "Patient1",
+  "note": "Nouvelle note test222",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c08b390c43b56fb3416e2e"
+  },
+  "patientId": "8",
+  "patient": "Patient1",
+  "note": "Note ",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c08b430c43b56fb3416e2f"
+  },
+  "patientId": "8",
+  "patient": "Patient1",
+  "note": "Note",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c0a3c91320120149194cd0"
+  },
+  "patientId": "9",
+  "patient": "TestExclamationNom",
+  "note": "test new id imp",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c0a4361320120149194cd1"
+  },
+  "patientId": "9",
+  "patient": "TestExclamationNom",
+  "note": "test new id imp",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c0a55e1320120149194cd2"
+  },
+  "patientId": "9",
+  "patient": "TestExclamationNom",
+  "note": "test redirect 1",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c0a5951320120149194cd3"
+  },
+  "patientId": "9",
+  "patient": "TestExclamationNom",
+  "note": "test no break",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c1b8690362570a5a5c55e7"
+  },
+  "patientId": "1",
+  "patient": "TestNone",
+  "note": "note test",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c1b9cb0362570a5a5c55e8"
+  },
+  "patientId": "1",
+  "patient": "TestNone",
+  "note": "NOte ",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+},
+{
+  "_id": {
+    "$oid": "67c1b9d10362570a5a5c55e9"
+  },
+  "patientId": "1",
+  "patient": "TestNone",
+  "note": "NOtes ",
+  "_class": "fr.openclassrooms.medilabo.doc.domain.NotePatient"
+}]

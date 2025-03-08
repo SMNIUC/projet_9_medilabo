@@ -2,6 +2,7 @@ package fr.openclassrooms.medilabo.site.controller;
 
 import fr.openclassrooms.medilabo.site.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,9 @@ public class LoginController
     private final RestTemplate restTemplate;
     private final UserService userService;
 
+    @Value( "${gateway.url}" )
+    private String gatewayUrl;
+
     @GetMapping("/login")
     public String getLoginPage( )
     {
@@ -28,7 +32,7 @@ public class LoginController
     @PostMapping("/login")
     public String postLoginPage( @RequestBody MultiValueMap<String, String> formData, Model model )
     {
-        String url = "http://localhost:8080/login";
+        String url = gatewayUrl+"/login";
 
         userService.saveCurrentUser( formData );
 
@@ -50,7 +54,7 @@ public class LoginController
         } catch (Exception ex)
         {
             // Log and handle exceptions (e.g., server unreachable, bad request)
-            model.addAttribute("error", "Server error");
+            model.addAttribute("error", "Server error" + ex.getMessage( ) );
             return "/login";
         }
     }

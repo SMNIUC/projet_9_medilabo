@@ -57,7 +57,7 @@
                         <th scope="row">${patient.idPatient}</th>
                         <td>${patient.nom}</td>
                         <td>${patient.prenom}</td>
-                        <td>${patient.statut}</td>
+                        <td>${(patient.statut)!"N/A"}</td>
                         <td><a href="/patients/${idPatient}">Fichier Patient</a></td>
                         <td><a href="/doc/newPatientNoteForm/${patient.nom}&${idPatient}">Nouvelle Note</a> - <a href="/doc/note-patient/${patient.nom}">Historique</a></td>
                         <td><a href="/patients/delete-patient/${idPatient}">Supprimer ce patient</a></td>

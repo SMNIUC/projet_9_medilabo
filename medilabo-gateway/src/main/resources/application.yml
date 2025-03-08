@@ -1,20 +1,38 @@
+################### Spring Gateway Routes Configuration ##########################
 spring:
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
       routes:
         - id: patients_path_route
-          uri: http://localhost:8081
+          uri: http://medilabo-patient-api:8081
+          #uri: http://localhost:8081
           predicates:
             - Path=/patients/**
+
         - id: doc_path_route
-          uri: http://localhost:8082
+          uri: http://medilabo-doc-api:8082
+          #uri: http://localhost:8082
           predicates:
             - Path=/doc/**
+
         - id: reporting_path_route
-          uri: http://localhost:8083
+          uri: http://medilabo-reporting-api:8083
+          #uri: http://localhost:8083
           predicates:
               - Path=/reporting/**
 
+  application:
+    name: medilabo-gateway
+
+
+################### DocMS-Gateway Port Configuration ##########################
 server:
   port: 8080  # Gateway runs on port 8080
 
+################### Logging Configuration ##########################
+logging:
+  level:
+    root: INFO
